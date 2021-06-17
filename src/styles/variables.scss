@@ -1,0 +1,43 @@
+@import '~bulma/sass/utilities/initial-variables.sass';
+
+$spacing-values: ("small": 10px, "medium": 30px, "large": 60px, "auto": auto);
+$body-size: 12px;
+
+// colors
+
+$white-ter: #F6F8FF;
+$turquoise: #00E9F3;
+$green: #00FFCF;
+$black: #323B44;
+$grey: #4C5A5D;
+$grey-light: #AAB2B5;
+
+// general
+$primary: $turquoise;
+$body-weight: 600;
+$body-font-size: 1em;
+$body-background-color: $white-ter;
+$family-sans-serif: 'Open Sans', sans-serif;
+$border: transparent;
+$radius: 4px;
+$radius-small: $radius;
+$radius-large: $radius;
+$text: $black;
+$text-light: $grey-light;
+$text-strong: $black;
+$link: $primary;
+$link-visited: $green;
+
+// input
+$input-color: darken($grey-light, 5%);
+$input-background-color: lighten($grey-light, 25%);
+$input-shadow: none;
+$input-height: 3.5em;
+$input-border-color: transparent;
+$input-hover-border-color: transparent;
+$input-focus-border-color: transparent;
+$input-focus-box-shadow-size: 0;
+
+// progress-bar
+
+$progress-bar-background-color: $white-ter;

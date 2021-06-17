@@ -1,0 +1,10 @@
+{
+  "MANAGEMENT": "Management",
+  "FINANCE": "Buchhaltung",
+  "HUMAN_RESOURCES": "Personalverwaltung",
+  "MARKETING": "Marketing",
+  "DEVELOPMENT": "Entwicklung",
+  "SALES": "Vertrieb",
+  "CUSTOMER_SUPPORT": "Kundenservice",
+  "IT": "IT"
+}

@@ -1,0 +1,109 @@
+@import '../../styles/variables.scss';
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.sidenav {
+  padding-top: 4em;
+  padding-bottom: 4em;
+  width: 6vw;
+  min-width: 96px;
+  background-color: $white;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+
+  .logo {
+    max-width: 40%;
+  }
+
+  .inner-nav {
+    margin-top: auto;
+    margin-bottom: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4em;
+    padding-bottom: 4em;
+
+    a {
+      width: 3em;
+      height: 3em;
+      min-width: 48px;
+      min-height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: $radius;
+      color: $grey;
+      padding: 0.8em;
+
+      & + a {
+        margin-top: 1.5em;
+      }
+
+      svg * {
+        fill: $grey;
+      }
+
+      &.active, &:hover {
+        color: $white;
+        background-color: $primary;
+
+        svg * {
+          fill: $white;
+        }
+      }
+    }
+  }
+
+  .signout {
+    width: 3em;
+    height: 3em;
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $radius;
+    color: $grey;
+    padding: 0.8em;
+    cursor: pointer;
+
+    svg * {
+      fill: $grey;
+    }
+  }
+}
+
+main {
+  flex-direction: row;
+  display: flex;
+  width: 100vw;
+  overflow: hidden;
+
+  & > .section {
+    padding-top: 2em;
+    overflow-y: auto;
+    margin-right: -2.5em;
+    flex-grow: 1;
+  }
+}
+
+.profile {
+  padding: 4em 3.5em;
+  flex: 1;
+  background-color: $white;
+  width: 20vw;
+  max-width: 488px;
+  min-width: 244px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+}

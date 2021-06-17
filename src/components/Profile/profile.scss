@@ -1,0 +1,40 @@
+@import '../../styles/variables.scss';
+
+::-webkit-progress-value {
+  border-radius: 60px; }
+::-moz-progress-bar {
+  border-radius: 60px }
+::-ms-fill {
+  border-radius: 60px;
+  border: none; }
+
+
+.notification-icon {
+  width: 1.4em;
+  height: 1.4em;
+  margin-top: -0.2em;
+  cursor: pointer;
+  display: inline-block;
+
+  .has-notification {
+    svg * {
+      fill: $grey;
+    }
+  }
+
+  svg {
+    width: 1.4em;
+    height: 1.4em;
+
+    * {
+      fill: $grey-light;
+    }
+  }
+}
+
+.activity-feed {
+  overflow-y: auto;
+  flex: 1;
+  height: 260px;
+  padding-right: 1em;
+}

@@ -1,0 +1,10 @@
+{
+  "NEW_FEEDBACK_TITLE": "Neues Feedback",
+  "NEW_BROWNBAG_TITLE": "Brownbag Session",
+  "NEW_SPENDING_TITLE": "Ausgabe freigegeben",
+  "NEW_SPENDING_TEXT": "Du wirst zu  <strong>{{training}}</strong> gehen",
+  "NEW_BROWNBAG_TEXT": "<strong>{{from}}</strong> wird am {{date}} über <strong>{{training}}</strong> sprechen",
+  "NEW_FEEDBACK_TEXT": "<strong>{{from}}</strong> hat ein Feedback zu <strong>{{training}}</strong> verfasst",
+  "LOOKINGFOR": "sucht nach Kollegen, die mit zu <strong>{{training}}</strong> gehen.",
+  "ISGOINGTO": " geht zu <strong>{{training}}</strong>, willst du auch hin?"
+}
