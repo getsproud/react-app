@@ -31,4 +31,5 @@ RUN ls -al
 
 FROM nginx:1.19.0 as production
 
-COPY --from=builder /app/build/ /usr/share/nginx/html
+COPY --from=builder /app/build/ /app
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
