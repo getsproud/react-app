@@ -1,5 +1,7 @@
-#
 FROM node:14.15.0-stretch as develop
+
+LABEL org.opencontainers.image.source https://github.com/getsproud/react-app
+
 # Default value; will be overridden by build_args, if passed
 ARG NODE_ENV=development
 
