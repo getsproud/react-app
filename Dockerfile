@@ -23,6 +23,10 @@ FROM develop as test
 
 ENTRYPOINT [ "npm", "run", "test" ]
 
-FROM test as production
+FROM develop as builder
 
-ENTRYPOINT [ "npm", "run", "build" ]
+RUN npm run build
+
+FROM nginx:1.19.0 as production
+
+COPY --from=builder build/ /usr/share/nginx/html
