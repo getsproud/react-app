@@ -1,4 +1,4 @@
-FROM node:14.15.0-stretch as develop
+FROM node:14.15.0-stretch AS develop
 
 LABEL org.opencontainers.image.source https://github.com/getsproud/react-app
 
@@ -19,14 +19,16 @@ ADD public public/
 
 ENTRYPOINT [ "npm", "run", "start" ]
 
-FROM develop as test
+FROM develop AS test
 
 ENTRYPOINT [ "npm", "run", "test" ]
 
-FROM develop as builder
+FROM develop AS builder
 
 RUN npm run build
 
+RUN ls -al
+
 FROM nginx:1.19.0 as production
 
-COPY --from=builder build/ /usr/share/nginx/html
+COPY --from=builder /app/build/ /usr/share/nginx/html
