@@ -1,9 +1,10 @@
 import axios from 'axios'
 
-const domain = origin.match(/(https:\/\/)?(([^.]+)\.)?(([^.]+)\.)?(employee|sproud(hq\.dev|hq\.io|\.hq|\.dev))$/)[5]
+const domain = origin.match(/(https:\/\/)?(([^.]+)\.)?(([^.]+)\.)?(sproud(\.io|\.dev))$/)[5]
+const baseOrigin = origin.match(/(https:\/\/)?(([^.]+)\.)?(([^.]+)\.)?(sproud(\.io|\.dev))$/)[6]
 
 const instance = axios.create({
-    baseURL: `https://api.${domain !== undefined ? domain + '.' : ''}sproud.${process.env.NODE_ENV !== 'production' ? 'dev' : 'io'}/v1`,
+    baseURL: `https://api.${domain !== undefined ? domain + '.' : ''}.${baseOrigin}/v1`,
     headers: {
       'Content-Type': 'application/json'
     },
