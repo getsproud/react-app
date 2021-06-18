@@ -4,7 +4,7 @@ const domain = origin.match(/(https:\/\/)?(([^.]+)\.)?(([^.]+)\.)?(sproud(\.io|\
 const baseOrigin = origin.match(/(https:\/\/)?(([^.]+)\.)?(([^.]+)\.)?(sproud(\.io|\.dev))$/)[6]
 
 const instance = axios.create({
-    baseURL: `https://api.${domain !== undefined ? domain + '.' : ''}.${baseOrigin}/v1`,
+    baseURL: `https://api.${domain !== undefined ? domain : ''}.${baseOrigin}/v1`,
     headers: {
       'Content-Type': 'application/json'
     },
