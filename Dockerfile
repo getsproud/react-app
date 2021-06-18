@@ -27,8 +27,6 @@ FROM develop AS builder
 
 RUN npm run build
 
-RUN ls -al
-
 FROM nginx:1.19.0 as production
 
 COPY --from=builder /app/build/ /app
