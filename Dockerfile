@@ -1,5 +1,7 @@
-#
-FROM node:14.15.0-stretch as develop
+FROM node:14.15.0-stretch AS develop
+
+LABEL org.opencontainers.image.source https://github.com/getsproud/react-app
+
 # Default value; will be overridden by build_args, if passed
 ARG NODE_ENV=development
 
@@ -17,10 +19,15 @@ ADD public public/
 
 ENTRYPOINT [ "npm", "run", "start" ]
 
-FROM develop as test
+FROM develop AS test
 
 ENTRYPOINT [ "npm", "run", "test" ]
 
-FROM test as production
+FROM develop AS builder
 
-ENTRYPOINT [ "npm", "run", "build" ]
+RUN npm run build
+
+FROM nginx:1.19.0 as production
+
+COPY --from=builder /app/build/ /app
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
