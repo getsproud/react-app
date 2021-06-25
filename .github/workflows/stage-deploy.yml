@@ -9,7 +9,7 @@ on:
     - LICENSE
 
 env:
-  IMAGE: app
+  IMAGE: react-app
 
 jobs:
   build-and-deploy:
