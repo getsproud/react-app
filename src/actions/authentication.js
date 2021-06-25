@@ -2,7 +2,7 @@ import axios from '../utils/axios'
 import * as types from '../constants/authentication'
 
 export const authenticate = (identifier, password) => async (dispatch) => {
-
+  console.log({identifier, password})
   const employee = await axios.post('/auth', {identifier, password})
   const department = await axios.get(`/department/${employee.department}`)
 
