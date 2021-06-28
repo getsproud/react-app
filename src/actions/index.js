@@ -6,11 +6,11 @@ import * as training from './training'
 
 const ActionCreators = Object.assign(
   {},
+  admin,
   authentication,
-  company,
   budget,
-  training,
-  admin
+  company,
+  training
 )
 
 export default ActionCreators
