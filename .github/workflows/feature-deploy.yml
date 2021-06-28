@@ -80,12 +80,12 @@ jobs:
       env:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA_STAGE }}
       run: |
-        mkdir -p ${HOME}/.kube
-        touch ${HOME}/.kube/config
-        echo "${{ env.KUBECONFIG }}" | base64 --decode >> ${HOME}/.kube/config
+        mkdir -p /tmp/.kube
+        touch /tmp/.kube/config
+        echo "${{ env.KUBECONFIG }}" | base64 --decode >> /tmp/.kube/config
 
         # install/upgrade helm chart
-        helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
+        KUBECONFIG=/tmp/.kube/config helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
         --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
         --set env_values.service.${{ env.IMAGE }}=${{ needs.get-tag.outputs.TAG }} \
         --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
