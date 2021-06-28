@@ -15,14 +15,12 @@ env:
 jobs:
   get-tag:
     runs-on: ubuntu-latest
-    outputs:
-      TAG: ${{ steps.get-ref.outputs.TAG }}
     steps:
     - name: Get the Tag
       id: get-ref
       run: |
         echo $(echo ${{ github.ref }} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)
-        echo '::set-output name=TAG::$(echo ${{ github.ref }} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)'
+        echo ::set-output name=TAG::$(echo ${{ github.ref }} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)
 
   build-image:
     needs: [get-tag]
