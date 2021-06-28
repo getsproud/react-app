@@ -1,9 +1,8 @@
-name: Stage Deployment
+name: Feature Deployment
 
 on:
   push:
     branches:
-      - /refs/heads/*
       - !main
     paths-ignore:
     - '*.md'
