@@ -88,26 +88,5 @@ jobs:
         --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
         --set env_values.service.${{ env.IMAGE }}=${{ env.TAG }} \
         --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
-        --namespace sproud-${{ env.TAG }}
-        --create-namespace \
-
-  send-notification:
-    need: [deploy-to-cluster]
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Get Message
-      id: log
-      run: echo "::set-output name=message::$(git log --no-merges --oneline)"
-
-    - name: Slack Notification
-      uses: rtCamp/action-slack-notify@v2
-      env:
-        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_ICON: https://avatars.slack-edge.com/2021-06-14/2168279331762_d05933b7090308e2869b_102.png
-        SLACK_CHANNEL: releases-stage
-        SLACK_USERNAME: sproud.bot
-        SLACK_COLOR: ${{ job.status }}
-        SLACK_MESSAGE: ${{ steps.log.outputs.message }}
-        SLACK_TITLE: Deployed new ${{ env.IMAGE }} service on https://stage.sproud.dev
-        SLACK_FOOTER: Powered by sproud.
+        --namespace sproud-${{ env.TAG }} \
+        --create-namespace
