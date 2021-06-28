@@ -17,10 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Get the Tag
+      outputs:
+        TAG: ${{ steps.get-ref.outputs.TAG }}
       id: get-ref
       run: |
-        echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
-        echo '::set-output name=TAG::${{env.TAG}}'
+        echo $(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)
+        echo '::set-output name=TAG::$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)'
 
   build-image:
     needs: [get-tag]
