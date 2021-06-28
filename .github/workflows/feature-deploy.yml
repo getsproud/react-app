@@ -97,4 +97,5 @@ jobs:
         --set env_values.service.${{ env.IMAGE }}=${{ needs.get-tag.outputs.TAG }} \
         --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
         --namespace sproud-${{ needs.get-tag.outputs.TAG }} \
+        --force \
         --create-namespace
