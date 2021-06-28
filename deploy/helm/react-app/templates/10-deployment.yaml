@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: {{ $.Values.service.image }}
-      {{- if ne $.Values.environment "io" }}s
+      {{- if ne $.Values.environment "io" }}
       feature: {{ $.Values.service.tag }}
       {{- else }}
       tag: {{ $.Values.service.tag }}

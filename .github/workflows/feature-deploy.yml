@@ -94,7 +94,7 @@ jobs:
         # install/upgrade helm chart
         KUBECONFIG=/tmp/.kube/config helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
         --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
-        --set env_values.service.${{ env.IMAGE }}=${{ needs.get-tag.outputs.TAG }} \
+        --set env_values.service.tag=${{ needs.get-tag.outputs.TAG }} \
         --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
         --namespace sproud-${{ needs.get-tag.outputs.TAG }} \
         --create-namespace
