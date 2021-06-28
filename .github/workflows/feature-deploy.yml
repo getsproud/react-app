@@ -15,10 +15,12 @@ env:
 jobs:
   get-tag:
     runs-on: ubuntu-latest
+    id: get-ref
     steps:
     - name: Get the Tag
       run: |
         echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
+        echo '::set-output name=TAG::${{env.TAG}}'
 
   build-image:
     needs: [get-tag]
@@ -37,7 +39,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ env.TAG }}
+        key: ${{ runner.os }}-buildx-${{ needs.get-tag.outputs.TAG }}
         restore-keys: |
           ${{ runner.os }}-buildx-
 
@@ -56,7 +58,7 @@ jobs:
         file: ./Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ghcr.io/getsproud/${{ env.IMAGE }}:${{ env.TAG }}
+        tags: ghcr.io/getsproud/${{ env.IMAGE }}:${{ needs.get-tag.outputs.TAG }}
         target: production
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
@@ -81,7 +83,7 @@ jobs:
         # install/upgrade helm chart
         helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
         --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
-        --set env_values.service.${{ env.IMAGE }}=${{ env.TAG }} \
+        --set env_values.service.${{ env.IMAGE }}=${{ needs.get-tag.outputs.TAG }} \
         --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
-        --namespace sproud-${{ env.TAG }} \
+        --namespace sproud-${{ needs.get-tag.outputs.TAG }} \
         --create-namespace
