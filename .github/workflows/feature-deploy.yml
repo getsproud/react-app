@@ -84,6 +84,8 @@ jobs:
         touch /tmp/.kube/config
         echo "${{ env.KUBECONFIG }}" | base64 --decode >> /tmp/.kube/config
 
+        ls -al
+
         # install/upgrade helm chart
         KUBECONFIG=/tmp/.kube/config helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
         --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
