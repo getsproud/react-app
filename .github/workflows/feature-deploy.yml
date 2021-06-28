@@ -75,7 +75,12 @@ jobs:
     needs: [build-image, get-tag]
     runs-on: ubuntu-latest
 
+
     steps:
+    - uses:  actions/checkout@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Deploy to Cluster
       env:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA_STAGE }}
