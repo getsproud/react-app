@@ -13,7 +13,15 @@ env:
   CLUSTER_ENV: development
 
 jobs:
+  get-tag:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Get the Tag
+      run: |
+        echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
+
   build-image:
+    needs: [get-tag]
     runs-on: ubuntu-latest
 
     steps:
@@ -29,27 +37,10 @@ jobs:
       uses: actions/cache@v2
       with:
         path: /tmp/.buildx-cache
-        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        key: ${{ runner.os }}-buildx-${{ env.TAG }}
         restore-keys: |
           ${{ runner.os }}-buildx-
 
-  get-tag:
-    runs-on: ubuntu-latest
-    needs: [build-image]
-
-    steps:
-    - name: Get the Ref
-      id: get-ref
-      uses: ankitvgupta/ref-to-tag-action@master
-      with:
-        ref: ${{ github.ref }}
-        head_ref: ${{ github.head_ref }}
-
-  push-image:
-    needs: [get-tag]
-    runs-on: ubuntu-latest
-
-    steps:
     - name: Login to Github Container Registry
       uses: docker/login-action@v1
       with:
@@ -65,11 +56,16 @@ jobs:
         file: ./Dockerfile
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ghcr.io/getsproud/${{ env.IMAGE }}:${{ steps.get-ref.outputs.tag }}
+        tags: ghcr.io/getsproud/${{ env.IMAGE }}:${{ env.TAG }}
         target: production
         cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache
+        cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
         build-args: NODE_ENV="development"
+
+    - name: Move cache
+      run: |
+        rm -rf /tmp/.buildx-cache
+        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   deploy-to-cluster:
     needs: [push-image]
@@ -81,7 +77,6 @@ jobs:
         KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA_STAGE }}
       run: |
         echo "${{ env.KUBECONFIG }}" | base64 --decode > ${HOME}/.kube/config
-        echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
 
         # install/upgrade helm chart
         helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
