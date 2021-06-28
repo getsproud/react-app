@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Values.service.image }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $.Values.service.image }}
+      {{- if ne $.Values.environment "io" }}s
+      feature: {{ trunc 1 $.Values.subdomain | quote }}
+      {{- else }}
+      tag: {{ $.Values.service.tag }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ $.Values.service.image }}
+        {{- if ne $.Values.environment "io" }}s
+        feature: {{ trunc 1 $.Values.subdomain | quote }}
+        {{- else }}
+        tag: {{ $.Values.service.tag }}
+        {{- end }}
+    spec:
+      containers:
+      - name: {{ $.Values.service.image }}-service
+        image: ghcr.io/getsproud/{{ $.Values.service.image }}:{{ $.Values.service.tag }}
+        imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /
+            {{- if eq $.Values.nodeEnv "stage" }}
+            port: 80
+            {{- else }}
+            port: 3000
+            {{- end }}
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            {{- if eq $.Values.nodeEnv "stage" }}
+            port: 80
+            {{- else }}
+            port: 3000
+            {{- end }}
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        env:
+        - name: NODE_ENV
+          value: {{ $.Values.nodeEnv }}
+      imagePullSecrets:
+      - name: gh-registry
+---

@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next'
 import moment from 'moment'
 import { useRouteMatch, Link } from 'react-router-dom'
 
-import * as types from '../../constants/training'
+import * as types from '../../constants/budget'
 
 import ActionCreators from '../../actions'
 
 import Loader from '../../components/Loader'
 
-import './training.scss'
+import './budget.scss'
 
-export default function TrainingList() {
+export default function BudgetList({ getTrainingById }) {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { url } = useRouteMatch()
@@ -22,18 +22,14 @@ export default function TrainingList() {
 
   const resetFilters = () => null
 
-  const trainings = useSelector(state => state.training.department)
+  const budget = useSelector(state => state.budget)
 
   useEffect(() => {
-    dispatch(ActionCreators.getTrainingsForDepartment())
+    dispatch(ActionCreators.getEmployeeBudget())
   }, [dispatch])
 
-  const getPrice = prices => {
-    const [min, max] = prices.reduce(([prevMin,prevMax], {price}) =>
-      [Math.min(prevMin, price), Math.max(prevMax, price)], [Infinity, -Infinity])
-
-    return {min, max}
-  }
+  const getReferenceFor = async (trainingId) =>
+    await ActionCreators.getTrainingById(trainingId)
 
   return (
     <>
@@ -131,16 +127,13 @@ export default function TrainingList() {
           <div className="box title-box">
             <div className="columns">
               <div className="column is-4 is-clickable" onClick={() => setSortKey('title')}>
-                <strong>{ t('common:TITLE') }</strong> <span className="sort-icon">{ sortKey === 'title' ? (<span className="lni lni-sm lni-chevron-down"></span>) : (<span className="lni lni-sm lni-chevron-up"></span>) }</span>
+                <strong>{ t('common:AMOUNT') }</strong> <span className="sort-icon">{ sortKey === 'title' ? (<span className="lni lni-sm lni-chevron-down"></span>) : (<span className="lni lni-sm lni-chevron-up"></span>) }</span>
               </div>
               <div className="column is-2 is-clickable" onClick={() => setSortKey('fromDate')}>
                 <strong>{ t('common:DATE') }</strong> <span className="sort-icon">{ sortKey === 'fromDate' ? (<span className="lni lni-sm lni-chevron-down"></span>) : (<span className="lni lni-sm lni-chevron-up"></span>) }</span>
               </div>
               <div className="column is-2">
-                <strong>{ t('common:LOCATION') }</strong>
-              </div>
-              <div className="column is-2 is-clickable" onClick={() => setSortKey('price')}>
-                <strong>{ t('common:PRICE') }</strong> <span className="sort-icon">{ sortKey === 'price' ? (<span className="lni lni-sm lni-chevron-down"></span>) : (<span className="lni lni-sm lni-chevron-up"></span>) }</span>
+                <strong>{ t('common:REFERENCE') }</strong>
               </div>
               <div className="column is-2">
                 <strong>{ t('common:ACTIONS') }</strong>
@@ -150,7 +143,7 @@ export default function TrainingList() {
         </div>
       </div>
 
-      { trainings && trainings.docs && trainings.docs.length ? trainings.docs.sort((a, b) => (a[sortKey] > b[sortKey]) ? 1 : -1).map(item => (
+      { budget && budget.spendings && budget.spendings ? budget.spendings.map(item => (
         <div className="columns" key={item._id}>
           <div className="column">
             <div className="box item-box">
@@ -163,35 +156,25 @@ export default function TrainingList() {
                       </span>
                     </div>
                     <div className="column">
-                        <strong>{ item.title }</strong>
+                        <strong>{ new Intl.NumberFormat('de-DE', { currencyDisplay: 'code', style: 'currency', currency: 'EUR' }).format(item.amount) }</strong>
                     </div>
                   </div>
                 </div>
                 <div className="column is-2">
-                  { moment(item.fromDate).format(t('common:DATE_WO_YEAR')) } - { moment(item.toDate).format(t('common:DATE_FULL')) }
+                  { moment(item.createdAt).format(t('common:DATE_FULL')) }
                 </div>
                 <div className="column is-2 training-location">
                   <div className="columns is-vcentered">
                     <div className="column is-narrow">
-                      { item.remote ? (
-                        <span className="icon has-text-grey-light">
-                          <span className="lni lni-2 lni-world"></span>
-                        </span>
-                      ) : (
-                        <span className="icon has-text-grey-light">
-                          <span className="lni lni-2 lni-map-marker"></span>
-                        </span>
-                      ) }
+                      { item.reference ? getReferenceFor(item.reference).data.title : 'loading...' }
                     </div>
                     <div className="column">
-                        { item.remote ? 'Remote' : `${item.city}${ item.country ? ', ' + item.country  : '' }` }
+                        { /* item.remote ? 'Remote' : `${item.city}${ item.country ? ', ' + item.country  : '' }` */}
                     </div>
                   </div>
                 </div>
                 <div className="column is-2">
-                  { new Intl.NumberFormat('de-DE', { currencyDisplay: 'code', style: 'currency', currency: 'EUR' }).format(getPrice(item.prices).min) }
-                  {` - `}
-                  { new Intl.NumberFormat('de-DE', { currencyDisplay: 'code', style: 'currency', currency: 'EUR' }).format(getPrice(item.prices).max) }
+
                 </div>
                 <div className="column is-2">
                   <Link to={`${url}/${item._id}`} className="button is-light button-has-icon"><span>{ t('common:TO_TRAINING') }</span> <span className="icon"><span className="lni lni-chevron-right"></span></span></Link>
@@ -202,9 +185,9 @@ export default function TrainingList() {
         </div>
       )) : (
         <Loader
-          startActions={[types.START_FETCHING_TRAININGS]}
-          stopActions={[types.SUCCESS_FETCHING_TRAININGS, types.FAILURE_FETCHING_TRAININGS]}
-          loaderName="training-list" />
+          startActions={[types.START_FETCHING_BUDGET]}
+          stopActions={[types.SUCCESS_FETCHING_BUDGET, types.FAILURE_FETCHING_BUDGET]}
+          loaderName="budget-list" />
       ) }
     </>
   )

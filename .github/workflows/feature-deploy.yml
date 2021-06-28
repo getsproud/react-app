@@ -3,13 +3,15 @@ name: Stage Deployment
 on:
   push:
     branches:
-    - main
+      - /refs/heads/*
+      - !main
     paths-ignore:
     - '*.md'
     - LICENSE
 
 env:
-  IMAGE: api-gateway
+  IMAGE: react-app
+  CLUSTER_ENV: development
 
 jobs:
   build-image:
@@ -68,7 +70,7 @@ jobs:
         target: production
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
-        build-args: NODE_ENV="stage"
+        build-args: NODE_ENV="development"
 
   deploy-to-cluster:
     needs: [push-image]
@@ -76,13 +78,19 @@ jobs:
 
     steps:
     - name: Deploy to Cluster
-      uses: danielr1996/kubectl-action@1.0.0
-      with:
-        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA_STAGE }}
-        args: |
-          set image --record deployment/${{ env.IMAGE }}-app \
-          ${{ env.IMAGE }}-service=ghcr.io/getsproud/${{ env.IMAGE }}:${{ steps.get-ref.outputs.tag }} \
-          -n sproud-stage
+      env:
+        KUBECONFIG: ${{ secrets.KUBE_CONFIG_DATA_STAGE }}
+      run: |
+        echo "${{ env.KUBECONFIG }}" | base64 --decode > ${HOME}/.kube/config
+        echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
+
+        # install/upgrade helm chart
+        helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
+        --values ./deploy/helm/${{ env.IMAGE }}/env.values.${{ env.CLUSTER_ENV }}.yaml \
+        --set env_values.service.${{ env.IMAGE }}=${{ env.TAG }} \
+        --set env_values.nodeEnv=${{ env.CLUSTER_ENV }} \
+        --namespace sproud-${{ env.TAG }}
+        --create-namespace \
 
   send-notification:
     need: [deploy-to-cluster]

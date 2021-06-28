@@ -5,18 +5,18 @@ import Loader from '../../components/Loader'
 import List from './list'
 import Detail from './details'
 
-import './training.scss'
+import './budget.scss'
 
-export default function Training() {
+export default function Budget() {
 
   const { path } = useRouteMatch()
 
   return (
-    <div className="sproud-training">
+    <div className="sproud-budget">
       <React.Suspense fallback={<Loader pageLoader />}>
         <Switch>
           <Route exact path={path} render={props => <React.Suspense fallback={<Loader pageLoader />}><List {...props} /></React.Suspense>} />
-          <Route path={`${path}/:trainingId`} render={props => <React.Suspense fallback={<Loader pageLoader />}><Detail {...props} /></React.Suspense>} />
+          <Route path={`${path}/:budgetId`} render={props => <React.Suspense fallback={<Loader pageLoader />}><Detail {...props} /></React.Suspense>} />
         </Switch>
       </React.Suspense>
     </div>
