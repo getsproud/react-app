@@ -82,7 +82,7 @@ jobs:
       run: |
         mkdir -p ${HOME}/.kube
         touch ${HOME}/.kube/config
-        echo "${{ env.KUBECONFIG }}" | base64 --decode > ${HOME}/.kube/config
+        echo "${{ env.KUBECONFIG }}" | base64 --decode >> ${HOME}/.kube/config
 
         # install/upgrade helm chart
         helm upgrade --install ${{ env.IMAGE }} ./deploy/helm/${{ env.IMAGE }} \
