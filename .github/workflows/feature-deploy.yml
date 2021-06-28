@@ -3,8 +3,8 @@ name: Feature Deployment
 on:
   push:
     branches:
-      - '*'
-      - '!main'
+    - '*'
+    - '!main'
     paths-ignore:
     - '*.md'
     - LICENSE
