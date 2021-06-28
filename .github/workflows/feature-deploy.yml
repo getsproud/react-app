@@ -21,8 +21,8 @@ jobs:
     - name: Get the Tag
       id: get-ref
       run: |
-        echo $(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)
-        echo '::set-output name=TAG::$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)'
+        echo $(echo ${{ github.ref }} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)
+        echo '::set-output name=TAG::$(echo ${{ github.ref }} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)'
 
   build-image:
     needs: [get-tag]
