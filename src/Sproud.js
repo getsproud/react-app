@@ -23,7 +23,7 @@ const Training = React.lazy(() => import('./domains/Training'))
 const Admin = React.lazy(() => import('./domains/Admin'))
 const Finance = React.lazy(() => import('./domains/Finance'))
 const Calendar = React.lazy(() => import('./domains/Calendar'))
-
+const Budget = React.lazy(() => import('./domains/Budget'))
 
 export default function Sproud() {
   const  [persistor, setPersistor] = useState(undefined)
@@ -57,6 +57,7 @@ export default function Sproud() {
                 <ProtectedRoute path='/admin' render={props => <React.Suspense fallback={<Loader pageLoader />}><Admin {...props} /></React.Suspense>} />
                 <ProtectedRoute path='/finance' render={props => <React.Suspense fallback={<Loader pageLoader />}><Finance {...props} /></React.Suspense>} />
                 <ProtectedRoute path='/calendar' render={props => <React.Suspense fallback={<Loader pageLoader />}><Calendar {...props} /></React.Suspense>} />
+                <ProtectedRoute path='/budget' render={props => <React.Suspense fallback={<Loader pageLoader />}><Budget {...props} /></React.Suspense>} />
               </AppLayout>
             </Switch>
           </Router>

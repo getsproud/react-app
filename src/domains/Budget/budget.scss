@@ -1,0 +1,57 @@
+@import '../../styles/variables.scss';
+
+.sproud-training {
+  .filter-box {
+    svg {
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  .filter-title {
+    svg {
+      width: 0.8em;
+      height: 0.8em;
+
+      * {
+        fill: $grey-light;
+      }
+    }
+
+    .icon {
+      svg {
+        * {
+          fill: $primary;
+        }
+      }
+    }
+  }
+}
+
+.is-training-logo svg, .training-location svg {
+  width: 2em;
+  height: 2em;
+
+  * {
+    fill: $grey-light;
+  }
+}
+
+small {
+  font-size: 0.65em;
+}
+
+.button-has-icon {
+  svg {
+    margin-left: 1em;
+    width: 1em;
+    height: 1em;
+  }
+}
+
+.icon {
+  svg {
+    width: 1.5em;
+    height: 1.5em;
+  }
+}
