@@ -15,6 +15,8 @@ env:
 jobs:
   get-tag:
     runs-on: ubuntu-latest
+    outputs:
+      TAG: ${{ steps.get-ref.outputs.TAG }}
     steps:
     - name: Get the Tag
       id: get-ref
