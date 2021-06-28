@@ -15,9 +15,9 @@ env:
 jobs:
   get-tag:
     runs-on: ubuntu-latest
-    id: get-ref
     steps:
     - name: Get the Tag
+      id: get-ref
       run: |
         echo "TAG=$(echo ${github.ref} | cut -c 12- | cut -d '-' -f 1 | sed s/\\//-/g)" >> $GITHUB_ENV
         echo '::set-output name=TAG::${{env.TAG}}'
