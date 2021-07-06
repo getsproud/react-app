@@ -6,20 +6,20 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ $.Values.service.image }}
-      {{- if ne $.Values.environment "io" }}s
-      feature: {{ trunc 1 $.Values.subdomain | quote }}
+      app: {{ $.Values.service.image | quote }}
+      {{- if ne $.Values.environment "io" }}
+      feature: {{ $.Values.service.tag | quote }}
       {{- else }}
-      tag: {{ $.Values.service.tag }}
+      tag: {{ $.Values.service.tag | quote }}
       {{- end }}
   template:
     metadata:
       labels:
-        app: {{ $.Values.service.image }}
-        {{- if ne $.Values.environment "io" }}s
-        feature: {{ trunc 1 $.Values.subdomain | quote }}
+        app: {{ $.Values.service.image | quote }}
+        {{- if ne $.Values.environment "io" }}
+        feature: {{ $.Values.service.tag | quote }}
         {{- else }}
-        tag: {{ $.Values.service.tag }}
+        tag: {{ $.Values.service.tag | quote }}
         {{- end }}
     spec:
       containers:
@@ -29,26 +29,31 @@ spec:
         readinessProbe:
           httpGet:
             path: /
-            {{- if eq $.Values.nodeEnv "stage" }}
-            port: 80
-            {{- else }}
+            {{- if eq $.Values.nodeEnv "development" }}
             port: 3000
+            {{- else }}
+            port: 80
             {{- end }}
           initialDelaySeconds: 30
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            {{- if eq $.Values.nodeEnv "stage" }}
-            port: 80
-            {{- else }}
+            {{- if eq $.Values.nodeEnv "development" }}
             port: 3000
+            {{- else }}
+            port: 80
             {{- end }}
           initialDelaySeconds: 60
           periodSeconds: 10
         ports:
+        {{- if eq $.Values.nodeEnv "development" }}
         - containerPort: 3000
           protocol: TCP
+        {{- else }}
+        - containerPort: 80
+          protocol: TCP
+        {{- end }}
         env:
         - name: NODE_ENV
           value: {{ $.Values.nodeEnv }}
