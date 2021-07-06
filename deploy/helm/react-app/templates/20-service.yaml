@@ -13,10 +13,10 @@ spec:
   ports:
   - name: http
     port: 80
-    {{- if eq $.Values.nodeEnv "stage" }}
-    targetPort: 80
-    {{- else }}
+    {{- if eq $.Values.nodeEnv "development" }}
     targetPort: 3000
+    {{- else }}
+    targetPort: 80
     {{- end }}
   selector:
     app: {{ $.Values.service.image }}
