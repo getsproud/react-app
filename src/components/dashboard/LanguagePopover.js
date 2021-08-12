@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Box,
   IconButton,
@@ -8,38 +8,38 @@ import {
   MenuItem,
   Popover,
   Typography
-} from '@material-ui/core';
+} from '@material-ui/core'
 
 const LanguagePopover = () => {
-  const anchorRef = useRef(null);
-  const { i18n, t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null)
+  const { i18n, t } = useTranslation()
+  const [open, setOpen] = useState(false)
 
   const languageOptions = {
-    en: {
+    'en-US': {
       icon: '/static/icons/uk_flag.svg',
       label: t('ENGLISH')
     },
-    de: {
+    'de-DE': {
       icon: '/static/icons/de_flag.svg',
       label: t('GERMAN')
     }
-  };
+  }
 
   const handleOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleChangeLanguage = (language) => {
-    i18n.changeLanguage(language);
-    setOpen(false);
-  };
+    i18n.changeLanguage(language)
+    setOpen(false)
+  }
 
-  const selectedOption = languageOptions[i18n.language];
+  const selectedOption = languageOptions[i18n.language]
 
   return (
     <>
@@ -112,7 +112,7 @@ const LanguagePopover = () => {
         ))}
       </Popover>
     </>
-  );
-};
+  )
+}
 
-export default LanguagePopover;
+export default LanguagePopover

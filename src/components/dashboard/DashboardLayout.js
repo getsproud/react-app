@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { experimentalStyled } from '@material-ui/core/styles';
-import DashboardNavbar from './DashboardNavbar';
-import DashboardSidebar from './DashboardSidebar';
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import { experimentalStyled } from '@material-ui/core/styles'
+
+import DashboardNavbar from './DashboardNavbar'
+import DashboardSidebar from './DashboardSidebar'
+import { BudgetProvider } from '../../contexts/BudgetContext'
 
 const DashboardLayoutRoot = experimentalStyled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -10,7 +12,7 @@ const DashboardLayoutRoot = experimentalStyled('div')(({ theme }) => ({
   height: '100%',
   overflow: 'hidden',
   width: '100%'
-}));
+}))
 
 const DashboardLayoutWrapper = experimentalStyled('div')(({ theme }) => ({
   display: 'flex',
@@ -20,13 +22,13 @@ const DashboardLayoutWrapper = experimentalStyled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     paddingLeft: '280px'
   }
-}));
+}))
 
 const DashboardLayoutContainer = experimentalStyled('div')({
   display: 'flex',
   flex: '1 1 auto',
   overflow: 'hidden'
-});
+})
 
 const DashboardLayoutContent = experimentalStyled('div')({
   flex: '1 1 auto',
@@ -34,27 +36,29 @@ const DashboardLayoutContent = experimentalStyled('div')({
   overflow: 'auto',
   position: 'relative',
   WebkitOverflowScrolling: 'touch'
-});
+})
 
 const DashboardLayout = () => {
-  const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState(false);
+  const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState(false)
 
   return (
-    <DashboardLayoutRoot>
-      <DashboardNavbar onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)} />
-      <DashboardSidebar
-        onMobileClose={() => setIsSidebarMobileOpen(false)}
-        openMobile={isSidebarMobileOpen}
-      />
-      <DashboardLayoutWrapper>
-        <DashboardLayoutContainer>
-          <DashboardLayoutContent>
-            <Outlet />
-          </DashboardLayoutContent>
-        </DashboardLayoutContainer>
-      </DashboardLayoutWrapper>
-    </DashboardLayoutRoot>
-  );
-};
+    <BudgetProvider> 
+      <DashboardLayoutRoot>
+        <DashboardNavbar onSidebarMobileOpen={() => setIsSidebarMobileOpen(true)} />
+        <DashboardSidebar
+          onMobileClose={() => setIsSidebarMobileOpen(false)}
+          openMobile={isSidebarMobileOpen}
+        />
+        <DashboardLayoutWrapper>
+          <DashboardLayoutContainer>
+            <DashboardLayoutContent>
+              <Outlet />
+            </DashboardLayoutContent>
+          </DashboardLayoutContainer>
+        </DashboardLayoutWrapper>
+      </DashboardLayoutRoot>
+    </BudgetProvider>
+  )
+}
 
-export default DashboardLayout;
+export default DashboardLayout

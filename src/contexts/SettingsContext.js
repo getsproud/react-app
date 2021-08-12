@@ -4,10 +4,9 @@ import { THEMES } from '../constants';
 
 const initialSettings = {
   compact: true,
-  direction: 'ltr',
   responsiveFontSizes: true,
   roundedCorners: true,
-  theme: THEMES.LIGHT
+  theme: THEMES.DARK
 };
 
 export const restoreSettings = () => {
@@ -21,7 +20,6 @@ export const restoreSettings = () => {
     } else {
       settings = {
         compact: true,
-        direction: 'ltr',
         responsiveFontSizes: true,
         roundedCorners: true,
         theme: window.matchMedia('(prefers-color-scheme: dark)').matches

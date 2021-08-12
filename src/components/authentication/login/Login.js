@@ -11,8 +11,8 @@ const Login = (props) => {
   return (
     <Formik
       initialValues={{
-        email: 'demo@devias.io',
-        password: 'Password123!',
+        email: 'janeley0@netvibes.com',
+        password: '!!TestTest12345!!',
         submit: null
       }}
       validationSchema={Yup
