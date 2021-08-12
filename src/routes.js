@@ -26,6 +26,10 @@ const Calendar = Loadable(lazy(() => import('./pages/dashboard/Calendar')));
 const Chat = Loadable(lazy(() => import('./pages/dashboard/Chat')));
 const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
 
+const TrainingList = Loadable(lazy(() => import('./pages/training/TrainingList')))
+const TrainingDetail = Loadable(lazy(() => import('./pages/training/TrainingDetail')))
+const TrainingCreate = Loadable(lazy(() => import('./pages/training/TrainingCreate')))
+
 // Error pages
 
 const AuthorizationRequired = Loadable(lazy(() => import('./pages/AuthorizationRequired')));
@@ -99,11 +103,15 @@ const routes = [
         children: [
           {
             path: '/',
-            element: <Chat />,
+            element: <TrainingList />,
+          },
+          {
+            path: '/create',
+            element: <TrainingCreate />
           },
           {
             path: '/:training',
-            element: <Chat />
+            element: <TrainingDetail />
           }
         ]
       },
@@ -125,6 +133,10 @@ const routes = [
           {
             path: '/spendings/:spending',
             element: <Chat />
+          },
+          {
+            path: 'analytics',
+            element: <Analytics />
           }
         ]
       },
@@ -133,7 +145,11 @@ const routes = [
         children: [
           {
             path: 'users',
-            element: <Chat />,
+            element: <Chat />
+          },
+          {
+            path: 'analytics',
+            element: <Analytics />
           }
         ]
       },

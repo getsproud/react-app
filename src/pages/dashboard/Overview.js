@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react'
+import { Helmet } from 'react-helmet-async'
+import { DateTime } from 'luxon'
 import {
   Box,
   Button,
@@ -10,36 +11,55 @@ import {
   Container,
   Grid,
   Typography
-} from '@material-ui/core';
+} from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
 import {
   OverviewInbox,
   OverviewLatestTransactions,
   OverviewPrivateWallet,
   OverviewTotalBalance,
   OverviewTotalTransactions,
-  OverviewWeeklyEarnings
-} from '../../components/dashboard/overview';
-import useSettings from '../../hooks/useSettings';
-import ArrowRightIcon from '../../icons/ArrowRight';
-import BriefcaseIcon from '../../icons/Briefcase';
-import DownloadIcon from '../../icons/Download';
-import ExternalLinkIcon from '../../icons/ExternalLink';
-import InformationCircleIcon from '../../icons/InformationCircle';
-import PlusIcon from '../../icons/Plus';
-import UsersIcon from '../../icons/Users';
-import gtm from '../../lib/gtm';
+  OverviewBudget
+} from '../../components/dashboard/overview'
+import useSettings from '../../hooks/useSettings'
+import useAuth from '../../hooks/useAuth'
+import useBudget from '../../hooks/useBudget'
+import ArrowRightIcon from '../../icons/ArrowRight'
+import BriefcaseIcon from '../../icons/Briefcase'
+import DownloadIcon from '../../icons/Download'
+import ExternalLinkIcon from '../../icons/ExternalLink'
+import InformationCircleIcon from '../../icons/InformationCircle'
+import UsersIcon from '../../icons/Users'
+import gtm from '../../lib/gtm'
 
 const Overview = () => {
-  const { settings } = useSettings();
+  const { settings } = useSettings()
+  const { user } = useAuth()
+  const { fetchBudgets } = useBudget()
+  const { t } = useTranslation()
 
   useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
+    fetchBudgets(user)
+    gtm.push({ event: 'page_view' })
+  }, [])
+
+  const getGreetingTime = (d = DateTime.now()) => {
+    const split_afternoon = 12; // 24hr time to split the afternoon
+    const split_evening = 17; // 24hr time to split the evening
+    const currentHour = parseFloat(d.toFormat('hh'));
+    
+    if (currentHour >= split_afternoon && currentHour <= split_evening) {
+      return 'afternoon';
+    } else if (currentHour >= split_evening) {
+      return 'evening';
+    }
+    return 'morning';
+  }
 
   return (
     <>
       <Helmet>
-        <title>Dashboard: Overview | Material Kit Pro</title>
+        <title>Dashboard | sproud.</title>
       </Helmet>
       <Box
         sx={{
@@ -66,42 +86,39 @@ const Overview = () => {
                   color="textSecondary"
                   variant="overline"
                 >
-                  Overview
+                  { t('OVERVIEW') }
                 </Typography>
                 <Typography
                   color="textPrimary"
                   variant="h5"
                 >
-                  Good Morning, Jane
+                  { t('GREETING', { context: getGreetingTime(), name: user.firstname }) }
                 </Typography>
                 <Typography
                   color="textSecondary"
                   variant="subtitle2"
                 >
-                  Here&apos;s what&apos;s happening with your projects
-                  today
+                  { t('DASHBOARD_HINT') }
                 </Typography>
               </Grid>
-              <Grid item>
-                <Button
-                  color="primary"
-                  startIcon={<PlusIcon fontSize="small" />}
-                  variant="contained"
-                >
-                  New Transaction
-                </Button>
-              </Grid>
             </Grid>
             <Grid
               item
-              md={6}
+              md={4}
               xs={12}
             >
-              <OverviewWeeklyEarnings />
+              <OverviewBudget />
             </Grid>
             <Grid
               item
-              md={6}
+              md={4}
+              xs={12}
+            >
+              <OverviewBudget />
+            </Grid>
+            <Grid
+              item
+              md={4}
               xs={12}
             >
               <OverviewPrivateWallet />
@@ -392,7 +409,7 @@ const Overview = () => {
         </Container>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Overview;
+export default Overview

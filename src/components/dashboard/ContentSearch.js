@@ -71,7 +71,7 @@ const ContentSearch = () => {
     <>
       <Tooltip title="Search">
         <IconButton
-          color="inherit"
+          color="default"
           onClick={handleOpen}
         >
           <SearchIcon fontSize="small" />

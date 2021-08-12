@@ -9,7 +9,8 @@
     "requireConfigFile": false
   },
   "extends": [
-    "airbnb"
+    "react-app",
+    "react-app/jest"
   ],
   "rules": {
     "class-methods-use-this": "off",

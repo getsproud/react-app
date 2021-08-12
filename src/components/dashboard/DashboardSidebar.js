@@ -1,37 +1,38 @@
-import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import { Box, Divider, Drawer } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { Box, Divider, Drawer } from '@material-ui/core'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTranslation } from 'react-i18next'
 
-import BusinessIcon from '@material-ui/icons/Business';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PeopleIcon from '@material-ui/icons/People';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import FastFoodIcon from '@material-ui/icons/Fastfood';
-import CalendarIcon from '@material-ui/icons/Event';
-import VerifiedIcon from '@material-ui/icons/Verified';
-import SchoolIcon from '@material-ui/icons/School';
-import CreditCardIcon from '../../icons/CreditCard';
-import ChartSquareBarIcon from '../../icons/ChartSquareBar';
-import Logo from '../Logo';
-import NavSection from '../NavSection';
-import Scrollbar from '../Scrollbar';
+import BusinessIcon from '@material-ui/icons/Business'
+import SettingsIcon from '@material-ui/icons/Settings'
+import PeopleIcon from '@material-ui/icons/People'
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance'
+import FastFoodIcon from '@material-ui/icons/Fastfood'
+import CalendarIcon from '@material-ui/icons/Event'
+import VerifiedIcon from '@material-ui/icons/Verified'
+import SchoolIcon from '@material-ui/icons/School'
+import CreditCardIcon from '../../icons/CreditCard'
+import ChartSquareBarIcon from '../../icons/ChartSquareBar'
+import Logo from '../Logo'
+import NavSection from '../NavSection'
+import Scrollbar from '../Scrollbar'
 
 const DashboardSidebar = (props) => {
-  const { onMobileClose, openMobile } = props;
-  const location = useLocation();
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
-  const { t } = useTranslation();
+  const { onMobileClose, openMobile } = props
+  const location = useLocation()
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'))
+  const { t } = useTranslation()
 
   const sections = [
     {
       title: null,
       items: [
         {
-          title: t('DASHBOARD'),
+          title: t('OVERVIEW'),
           path: '/',
+          exact: true,
           icon: <ChartSquareBarIcon fontSize="small" />
         },
         {
@@ -69,6 +70,11 @@ const DashboardSidebar = (props) => {
     {
       title: t('FINANCE'),
       items: [
+         {
+          title: t('DASHBOARD'),
+          path: '/finance/analytics',
+          icon: <ChartSquareBarIcon fontSize="small" />
+        },
         {
           title: t('SPENDINGS'),
           path: '/finance/spendings',
@@ -79,6 +85,11 @@ const DashboardSidebar = (props) => {
     {
       title: t('HR'),
       items: [
+        {
+          title: t('DASHBOARD'),
+          path: '/hr/analytics',
+          icon: <ChartSquareBarIcon fontSize="small" />
+        },
         {
           title: t('USERS'),
           path: '/hr/users',
@@ -101,13 +112,13 @@ const DashboardSidebar = (props) => {
         }
       ]
     }
-  ];
+  ]
 
   useEffect(() => {
     if (openMobile && onMobileClose) {
-      onMobileClose();
+      onMobileClose()
     }
-  }, [location.pathname]);
+  }, [location.pathname])
 
   const content = (
     <Box
@@ -148,13 +159,13 @@ const DashboardSidebar = (props) => {
                   mt: 3
                 }
               }}
-              {...section}
+              { ...section }
             />
           ))}
         </Box>
       </Scrollbar>
     </Box>
-  );
+  )
 
   if (lgUp) {
     return (
@@ -171,9 +182,9 @@ const DashboardSidebar = (props) => {
         }}
         variant="permanent"
       >
-        {content}
+        { content }
       </Drawer>
-    );
+    )
   }
 
   return (
@@ -189,14 +200,14 @@ const DashboardSidebar = (props) => {
       }}
       variant="temporary"
     >
-      {content}
+      { content }
     </Drawer>
-  );
-};
+  )
+}
 
 DashboardSidebar.propTypes = {
   onMobileClose: PropTypes.func,
   openMobile: PropTypes.bool
-};
+}
 
-export default DashboardSidebar;
+export default DashboardSidebar

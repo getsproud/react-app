@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { subDays, subHours } from 'date-fns';
+import { useRef, useState } from 'react'
+import { subDays, subHours } from 'date-fns'
 import {
   Avatar,
   Badge,
@@ -14,13 +14,14 @@ import {
   Popover,
   Tooltip,
   Typography
-} from '@material-ui/core';
-import BellIcon from '../../icons/Bell';
-import ChatAltIcon from '../../icons/ChatAlt';
-import CreditCardIcon from '../../icons/CreditCard';
-import ShoppingCartIcon from '../../icons/ShoppingCart';
+} from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
+import BellIcon from '../../icons/Bell'
+import ChatAltIcon from '../../icons/ChatAlt'
+import CreditCardIcon from '../../icons/CreditCard'
+import ShoppingCartIcon from '../../icons/ShoppingCart'
 
-const now = new Date();
+const now = new Date()
 
 const notifications = [
   {
@@ -51,31 +52,32 @@ const notifications = [
     title: 'New message received',
     type: 'new_message'
   }
-];
+]
 
 const iconsMap = {
   item_shipped: ShoppingCartIcon,
   new_message: ChatAltIcon,
   order_placed: CreditCardIcon
-};
+}
 
 const NotificationsPopover = () => {
-  const anchorRef = useRef(null);
-  const [open, setOpen] = useState(false);
+  const anchorRef = useRef(null)
+  const [open, setOpen] = useState(false)
+  const { t } = useTranslation()
 
   const handleOpen = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   return (
     <>
-      <Tooltip title="Notifications">
+      <Tooltip title={ t('NOTIFICATIONS') }>
         <IconButton
-          color="inherit"
+          color="default"
           ref={anchorRef}
           onClick={handleOpen}
         >
@@ -104,7 +106,7 @@ const NotificationsPopover = () => {
             color="textPrimary"
             variant="h6"
           >
-            Notifications
+            { t('NOTIFICATIONS') }
           </Typography>
         </Box>
         {notifications.length === 0
@@ -114,7 +116,7 @@ const NotificationsPopover = () => {
                 color="textPrimary"
                 variant="subtitle2"
               >
-                There are no notifications
+                { t('NO_NOTIFICATIONS') }
               </Typography>
             </Box>
           )
@@ -122,7 +124,7 @@ const NotificationsPopover = () => {
             <>
               <List disablePadding>
                 {notifications.map((notification) => {
-                  const Icon = iconsMap[notification.type];
+                  const Icon = iconsMap[notification.type]
 
                   return (
                     <ListItem
@@ -153,7 +155,7 @@ const NotificationsPopover = () => {
                         secondary={notification.description}
                       />
                     </ListItem>
-                  );
+                  )
                 })}
               </List>
               <Box
@@ -168,14 +170,14 @@ const NotificationsPopover = () => {
                   size="small"
                   variant="text"
                 >
-                  Mark all as read
+                  { t('MARK_AS_READ') }
                 </Button>
               </Box>
             </>
           )}
       </Popover>
     </>
-  );
-};
+  )
+}
 
-export default NotificationsPopover;
+export default NotificationsPopover

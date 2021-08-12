@@ -1,0 +1,5 @@
+export { default as TrainingListTable } from './TrainingListTable'
+export { default as TrainingParticpants } from './TrainingParticpants'
+export { default as TrainingBookingModal } from './TrainingBookingModal'
+export { default as TrainingOverview } from './TrainingOverview'
+export { default as TrainingReviews } from './TrainingReviews'

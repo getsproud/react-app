@@ -137,7 +137,7 @@ const themesOptions = {
       },
       mode: 'light',
       primary: {
-        contrastText: '#304F59',
+        contrastText: '#222C36',
         main: '#00E9F3'
       },
       success: {
@@ -177,7 +177,7 @@ const themesOptions = {
       },
       mode: 'dark',
       primary: {
-        contrastText: '#304F59',
+        contrastText: '#222C36',
         main: '#00E9F3'
       },
       success: {
