@@ -1,12 +1,14 @@
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import { Box, Button, FormHelperText, TextField } from '@material-ui/core';
-import useAuth from '../../../hooks/useAuth';
-import useMounted from '../../../hooks/useMounted';
+import * as Yup from 'yup'
+import { Formik } from 'formik'
+import { Box, Button, FormHelperText, TextField } from '@material-ui/core'
+import { useDispatch } from 'react-redux'
+import useMounted from '../../../hooks/useMounted'
+
+import { useLoginMutation } from '../../../services/authentication'
 
 const Login = (props) => {
-  const mounted = useMounted();
-  const { login } = useAuth();
+  const mounted = useMounted()
+  const [login, { isLoading }] = useLoginMutation()
 
   return (
     <Formik
@@ -29,19 +31,21 @@ const Login = (props) => {
             .required('Password is required')
         })}
       onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
+        setSubmitting(true)
+        console.log(values)
         try {
-          await login(values.email, values.password);
+          await login(values)
 
           if (mounted.current) {
-            setStatus({ success: true });
-            setSubmitting(false);
+            setStatus({ success: true })
+            setSubmitting(false)
           }
         } catch (err) {
-          console.error(err);
+          console.error(err)
           if (mounted.current) {
-            setStatus({ success: false });
-            setErrors({ submit: err.message });
-            setSubmitting(false);
+            setStatus({ success: false })
+            setErrors({ submit: err.message })
+            setSubmitting(false)
           }
         }
       }}
@@ -101,7 +105,7 @@ const Login = (props) => {
         </form>
       )}
     </Formik>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

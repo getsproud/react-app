@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next'
 import useAuth from '../../hooks/useAuth'
 
 const TrainingMembers = (props) => {
-  const { members, ...other } = props
+  const { members, isLoading, ...other } = props
   const { t } = useTranslation()
   const { user } = useAuth()
 
@@ -28,14 +28,14 @@ const TrainingMembers = (props) => {
       />
       <CardContent sx={{ pt: 0 }}>
         <List>
-          { members.map((member) => (
+          { !isLoading ? members.map((member) => (
             <ListItem
               disableGutters
               key={ member._id }
             >
               <ListItemAvatar>
-                <Avatar src={member.avatar}>
-                  { getInitials(`${member.firstname} ${member.lastname}`) }
+                <Avatar src={member.participant.avatar}>
+                  { getInitials(`${member.participant.firstname} ${member.participant.lastname}`) }
                 </Avatar>
               </ListItemAvatar>
               <ListItemText
@@ -44,7 +44,7 @@ const TrainingMembers = (props) => {
                     color="textPrimary"
                     variant="subtitle2"
                   >
-                    { user._id === member._id ? t('YOU') : `${member.firstname} ${member.lastname}` }
+                    { user._id === member._id ? t('YOU') : `${member.participant.firstname} ${member.participant.lastname}` }
                   </Typography>
                 )}
                 secondary={(
@@ -52,12 +52,22 @@ const TrainingMembers = (props) => {
                     color="textSecondary"
                     variant="body2"
                   >
-                    { member.position }
+                    { member.participant.position }
                   </Typography>
                 )}
               />
             </ListItem>
-          )) }
+          )) : null }
+          { !isLoading && members.length === 0 ? (
+            <ListItem disableGutters>
+              <Typography
+                color="textPrimary"
+                variant="subtitle2"
+              >
+                { t('NO_PARTICIPANTS') }
+              </Typography>
+            </ListItem>
+          ) : null}
         </List>
       </CardContent>
     </Card>

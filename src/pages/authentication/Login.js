@@ -1,21 +1,18 @@
-import { useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
-import { Box, Card, CardContent, Container, Divider, Link, Typography } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-// import AuthBanner from '../../components/authentication/AuthBanner';
-import {
-  Login as LoginForm
-} from '../../components/authentication/login';
-import Logo from '../../components/Logo';
-import gtm from '../../lib/gtm';
+import { useEffect } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
+import { Box, Card, CardContent, Container, Divider, Link, Typography } from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
+import { Login as LoginForm } from '../../components/authentication/login'
+import Logo from '../../components/Logo'
+import gtm from '../../lib/gtm'
 
 const Login = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   useEffect(() => {
-    gtm.push({ event: 'page_view' });
-  }, []);
+    gtm.push({ event: 'page_view' })
+  }, [])
 
   return (
     <>
@@ -112,7 +109,7 @@ const Login = () => {
         </Container>
       </Box>
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

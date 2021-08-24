@@ -4,11 +4,9 @@ import TrainingReviewsSummary from './TrainingReviewsSummary'
 import TrainingReviewCard from './TrainingReviewCard'
 
 const TrainingReviews = (props) => {
-  const { reviews, ...other } = props
+  const { isLoading, reviews, ...other } = props
 
   const rating = reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
-
-  console.log(reviews)
 
   return (
     <div {...other}>
@@ -36,7 +34,8 @@ const TrainingReviews = (props) => {
 }
 
 TrainingReviews.propTypes = {
-  reviews: PropTypes.array
+  reviews: PropTypes.array,
+  isLoading: PropTypes.bool
 }
 
 export default TrainingReviews

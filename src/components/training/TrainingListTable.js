@@ -22,6 +22,7 @@ import {
   TableRow,
   TextField,
   Skeleton,
+  CircularProgress,
   FormControlLabel,
   Switch
 } from '@material-ui/core'
@@ -34,17 +35,18 @@ import ArrowRightIcon from '../../icons/ArrowRight'
 import PencilAltIcon from '../../icons/PencilAlt'
 import SearchIcon from '../../icons/Search'
 import Scrollbar from '../Scrollbar'
+import { useGetAllTrainingsQuery } from '../../services/training'
 
 const TrainingListTable = (props) => {
-  const { trainings, ...other } = props
+  const { ...other } = props
   const [page, setPage] = useState(0)
   const [limit, setLimit] = useState(12)
   const [query, setQuery] = useState('')
   const [list, setList] = useState([])
   const [isRemote, setIsRemote] = useState(false)
+  const [filter, setFilter] = useState({})
   const { t } = useTranslation()
   const { user } = useAuth()
-  const { fetchTrainings } = useTraining()
   const { departments, fetchDepartments } = useDepartment()
 
   const departmentOptions = departments.docs.map((d) => ({
@@ -59,11 +61,11 @@ const TrainingListTable = (props) => {
 
   const sortOptions = [{
     label: t('SORT_BY_DATE_ASC'),
-    value: '-createdAt'
+    value: '-fromDate'
   },
   {
     label: t('SORT_BY_DATE_DESC'),
-    value: 'createdAt'
+    value: 'fromDate'
   },
   {
     label: t('SORT_BY_PRICE_ASC'),
@@ -76,6 +78,8 @@ const TrainingListTable = (props) => {
 
   const [sort, setSort] = useState(sortOptions[0].value)
   const [department, setDepartment] = useState(departmentOptions[0].value)
+
+  const { data: trainings, error, isLoading, isFetching } = useGetAllTrainingsQuery(filter)
 
   const handleQueryChange = (event) => {
     setQuery(event.target.value)
@@ -107,7 +111,18 @@ const TrainingListTable = (props) => {
     if (isRemote) mongoQuery.remote = isRemote
     if (department !== 'all') mongoQuery.departments = department
 
-    fetchTrainings(query, limit, page, sort, mongoQuery)
+    const mq = JSON.stringify(mongoQuery)
+
+    const f = {
+      limit,
+      page,
+      sort,
+    }
+
+    if (query && query.length) f.q = query
+    if (mq && mq.length > 2) f.query = mq
+
+    setFilter(f)
   }
 
   useEffect(() => {
@@ -115,7 +130,7 @@ const TrainingListTable = (props) => {
   }, [])
 
   useEffect(() => {
-    if (query.length > 2 || query === '') debounce(applyChanges, 2000)(query, limit, page, sort, isRemote)
+    if (query.length > 2 || query === '') debounce(applyChanges, 800)(query, limit, page, sort, isRemote)
   }, [query])
   
   useEffect(() => {
@@ -123,18 +138,14 @@ const TrainingListTable = (props) => {
   }, [limit, page, sort, isRemote, department])
 
   useEffect(() =>  {
-    trainings.docs.forEach((d, i) => {
-      trainings.docs[i].departments.forEach((dep, j) => {
-        const found = departments.docs.filter(obj => {
-          return obj._id === dep || obj._id === dep._id
-        })[0]
+    if (!isLoading && trainings) {
+      setList(trainings.docs)
+    }
+  }, [isLoading, trainings])
 
-        trainings.docs[i].departments[j] = found
-      })
-    })
-
-    setList(trainings.docs)
-  }, [trainings.docs, departments.docs])
+  useEffect(() =>  {
+    console.log(isLoading, isFetching)
+  }, [isLoading, isFetching])
 
   numeral.locale(i18n.language.replace(/-\w+/, ''))
 
@@ -162,6 +173,11 @@ const TrainingListTable = (props) => {
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  { isFetching ? <CircularProgress size={20} /> : null }
                 </InputAdornment>
               )
             }}
@@ -313,11 +329,11 @@ const TrainingListTable = (props) => {
                       }
                     </TableCell>
                     <TableCell>
-                     { t('FROM_PRICE') } { numeral(training.prices.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))[0].price)
+                      { t('FROM_PRICE') } { numeral([].concat(training.prices).sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))[0].price)
                         .format(`0,0.00`) } { training.prices[0].currency }
                     </TableCell>
                     <TableCell align="right">
-                      { training.author === user._id ? (
+                      { training.author._id === user._id ? (
                         <IconButton
                           component={RouterLink}
                           to="#"
@@ -341,7 +357,7 @@ const TrainingListTable = (props) => {
       </Scrollbar>
       <TablePagination
         component="div"
-        count={trainings.totalDocs}
+        count={!isLoading ? trainings.totalDocs : 0}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -352,8 +368,6 @@ const TrainingListTable = (props) => {
   )
 }
 
-TrainingListTable.propTypes = {
-  trainings: PropTypes.object.isRequired
-}
+TrainingListTable.propTypes = {}
 
 export default TrainingListTable

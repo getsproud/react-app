@@ -13,7 +13,6 @@ import AdapterDateFns from '@material-ui/lab/AdapterDateFns'
 import StyledEngineProvider from '@material-ui/core/StyledEngineProvider'
 
 import App from './App'
-import { AuthProvider } from './contexts/JWTContext'
 import { SettingsProvider } from './contexts/SettingsContext'
 import store from './store'
 
@@ -25,9 +24,7 @@ ReactDOM.render(
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <SettingsProvider>
               <BrowserRouter>
-                <AuthProvider>
-                  <App />
-                </AuthProvider>
+                <App />
               </BrowserRouter>
             </SettingsProvider>
           </LocalizationProvider>

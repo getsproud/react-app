@@ -6,8 +6,8 @@ import TrainingMembers from './TrainingMembers'
 import TrainingMetadata from './TrainingMetadata'
 
 const TrainingOverview = (props) => {
-  const { training, ...other } = props
-  const getPrice = () =>  numeral(training.prices.sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))[0].price).format(`0,0.00`) 
+  const { training, isLoading, ...other } = props
+  const getPrice = () =>  numeral([].concat(training.prices).sort((a,b) => (a.price > b.price) ? 1 : ((b.price > a.price) ? -1 : 0))[0].price).format(`0,0.00`) 
 
   return (
     <Grid
@@ -43,7 +43,7 @@ const TrainingOverview = (props) => {
           spots={training.spots}
         />
         <Box sx={{ mt: 3 }}>
-          <TrainingMembers members={training.participants} />
+          <TrainingMembers isLoading={isLoading} members={training.participants} />
         </Box>
       </Grid>
     </Grid>

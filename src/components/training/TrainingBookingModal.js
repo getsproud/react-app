@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import toast from 'react-hot-toast'
 import { NativeSelect, Box, Button, Dialog, Divider, Typography } from '@material-ui/core'
@@ -7,21 +7,33 @@ import useBudget from '../../hooks/useBudget'
 import { format } from 'date-fns'
 import numeral from 'numeral'
 
+import { useParticipateMutation } from '../../services/training'
+
 const TrainingApplicationModal = (props) => {
   const { training, onApply, onClose, open, ...other } = props
-  const [value, setValue] = useState(null)
+  const [value, setValue] = useState("")
   const [price, setPrice] = useState(null)
   const { budget } = useBudget()
   const { t } = useTranslation()
 
+  const [participate, { data, isLoading, error }] = useParticipateMutation()
+
+  useEffect(() => {
+    if (!error && data !== undefined) toast.success(t('TRAINING_PARTICIPATING_SUCCESS'))
+    else if (error !== undefined) toast.error(t(error.data.i18n))
+
+  }, [isLoading])
+
   const handleChange = (event) => {
-    console.log(event.target.value)
     setValue(event.target.value)
     setPrice(training.prices.find(price => price.title === event.target.value))
   }
 
-  const handleBookSpot = () => {
-    toast.success('Request sent!')
+  const handleBookSpot = ticket => {
+    participate({
+      id: training._id,
+      ticket: price
+    })
 
     if (onApply) {
       onApply()
@@ -85,7 +97,7 @@ const TrainingApplicationModal = (props) => {
           { t('TICKET') }
         </Typography>
         <Box>
-          <NativeSelect 
+          <NativeSelect
             value={value}
             onChange={handleChange}
             inputProps={{
@@ -94,7 +106,6 @@ const TrainingApplicationModal = (props) => {
           > 
             <option 
               value=""
-              selected
               disabled >{ t('CHOOSE_TICKET') }</option>
             { training.prices.map(p => (
               <option 
@@ -184,7 +195,7 @@ const TrainingApplicationModal = (props) => {
           >
            { t('CANCEL') }
           </Button>
-          { budget.remaining - price.price > 0 ? (
+          { price && price.price && budget.remaining - price.price > 0 ? (
             <Button
               color="primary"
               onClick={handleBookSpot}
@@ -195,13 +206,23 @@ const TrainingApplicationModal = (props) => {
             </Button>
           ) : (
             <Button
+              disabled
+              color="primary"
+              variant="contained"
+              disabled={price === null}
+            >
+            { t('BOOK_SPOT_NOW') }
+            </Button>
+          ) }
+          { price && price.price && budget.remaining - price.price <= 0 ? (
+            <Button
               color="primary"
               onClick={handleBudgetRequest}
               variant="contained"
             >
             { t('BUDGET_REQUEST') }
             </Button>
-          ) }
+          ) : null }
         </Box>
       </Box>
     </Dialog>

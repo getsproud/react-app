@@ -2,32 +2,34 @@ import { useCallback, useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Box, Button, Container, Divider, Grid, Tab, Tabs, Typography, Rating } from '@material-ui/core'
 import { ConfirmationNumber, School } from '@material-ui/icons'
+import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router-dom'
+
 import {
   TrainingParticpants,
   TrainingBookingModal,
   TrainingOverview,
   TrainingReviews
 } from '../../components/training/'
-import useMounted from '../../hooks/useMounted'
 import useSettings from '../../hooks/useSettings'
-import useTraining from '../../hooks/useTraining'
 import useAuth from '../../hooks/useAuth'
 import CheckIcon from '../../icons/Check'
 import ShareIcon from '../../icons/Share'
+import { useGetTrainingByIdQuery } from '../../services/training'
+import { useGetFeedbacksForTrainingQuery } from '../../services/feedback'
+
 import gtm from '../../lib/gtm'
-import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+
 
 const TrainingDetails = () => {
-  const mounted = useMounted()
   const { settings } = useSettings()
   const [currentTab, setCurrentTab] = useState('overview')
-  const [trainingDetails, setTraining] = useState(null)
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
   const { t } = useTranslation()
   const { training: id } = useParams()
-  const { fetchTrainingById, fetchTrainingFeedbacks, training, feedbacks } = useTraining()
   const { user } = useAuth()
+  const { data: training, isLoading: trainingLoading, error: trainingError } = useGetTrainingByIdQuery(id)
+  const { data: feedbacks, isLoading: feedbackLoading, error: feedbackError } = useGetFeedbacksForTrainingQuery({ id })
 
   const tabs = [
     { label: t('OVERVIEW'), value: 'overview' },
@@ -37,23 +39,7 @@ const TrainingDetails = () => {
 
   useEffect(() => {
     gtm.push({ event: 'page_view' })
-    fetchTrainingById(id)
-    fetchTrainingFeedbacks(id, 1, 12)
   }, [])
-
-  const getTraining = useCallback(async () => {
-    try {
-      if (mounted.current) {
-        setTraining(training)
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }, [mounted, training])
-
-  useEffect(() => {
-    getTraining()
-  }, [training])
 
   const handleApplyModalOpen = () => {
     setIsBookingModalOpen(true)
@@ -71,22 +57,22 @@ const TrainingDetails = () => {
     let participating = false
     training.participants.forEach(p => {
       if (participating !== true) {
-        participating = user._id === p._id
+        participating = user._id === p.participant._id
       }
     })
     return participating
   }
 
-  const rating = feedbacks && feedbacks.docs ? feedbacks.docs.reduce((acc, review) => acc + review.rating, 0) / feedbacks.docs.length : 0
+  const rating = !feedbackLoading && feedbacks && feedbacks.docs ? feedbacks.docs.reduce((acc, review) => acc + review.rating, 0) / feedbacks.docs.length : 0
 
-  if (!trainingDetails) {
+  if (trainingLoading) {
     return null
   }
 
   return (
     <>
       <Helmet>
-        <title>{ trainingDetails.title || t('DEVELOPMENT') } | sproud.</title>
+        <title>{ training.title || t('DEVELOPMENT') } | sproud.</title>
       </Helmet>
       <Box
         sx={{
@@ -106,7 +92,7 @@ const TrainingDetails = () => {
                 color="textPrimary"
                 variant="h5"
               >
-                { trainingDetails.title }
+                { training.title }
               </Typography>
               <Box
                 sx={{
@@ -213,11 +199,11 @@ const TrainingDetails = () => {
           <Divider />
           <Box sx={{ mt: 3 }}>
             {currentTab === 'overview'
-            && <TrainingOverview training={trainingDetails} />}
+            && <TrainingOverview training={training} />}
             {currentTab === 'reviews'
-            && <TrainingReviews reviews={feedbacks.docs} />}
+            && <TrainingReviews reviews={feedbacks ? feedbacks.docs : [] } isLoading={feedbackLoading} />}
             {currentTab === 'participants'
-            && <TrainingParticpants participants={trainingDetails.participants} />}
+            && <TrainingParticpants participants={training.participants} isLoading={trainingLoading} />}
           </Box>
         </Container>
       </Box>

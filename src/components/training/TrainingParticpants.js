@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Box,
@@ -14,31 +14,17 @@ import {
   Typography
 } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
+import { format } from 'date-fns'
+
 import Scrollbar from '../Scrollbar'
 import useDepartment from '../../hooks/useDepartment'
+import { combineReducers } from 'redux'
 
 const TrainingParticpants = (props) => {
-  const { participants, ...other } = props
-  const [participantArray, setParticipants] = useState([])
+  const { participants, isLoading, ...other } = props
   const [rowsPerPage, setRowsPerPage] = useState(12)
   const [page, setPage] = useState(0)
   const { t } = useTranslation()
-  const { fetchDepartmentById } = useDepartment()
-  
-  const getDepartment = async (item) => {
-    const department = await fetchDepartmentById(item.department)
-    item.departmentName = department.name
-
-    return item
-  }
-
-  const getData = async () => {
-    return Promise.all(participants.map(item => getDepartment(item)))
-  }
-
-  useEffect(() => {
-    getData().then(p => setParticipants(p))
-  }, [participants])
 
   return (
     <Card {...other}>
@@ -56,36 +42,52 @@ const TrainingParticpants = (props) => {
                 <TableCell>
                   { t('BOOKED_AT') }
                 </TableCell>
+                <TableCell>
+                  { t('TICKET') }
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {participantArray.length ? participantArray.map((item) => (
-                <TableRow key={item._id}>
+              {!isLoading ? participants.map((item) => (
+                <TableRow key={item.participant._id}>
                   <TableCell>
                     <Typography
                       color="textPrimary"
                       variant="subtitle2"
                     >
-                      {item.firstname} {item.lastname}
+                      {item.participant.firstname} {item.participant.lastname}
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Chip label={item.departmentName} 
+                    <Chip label={item.participant.department.name} 
                       variant="outlined" /> 
                   </TableCell>
                   <TableCell>
-                    irgendwas
+                    { format(new Date(item.bookedAt), 'dd.MM.yyyy')}
+                  </TableCell>
+                  <TableCell>
+                    { item.ticket.title }
                   </TableCell>
                 </TableRow>
               )) : (
                 <TableRow>
-                  <TableCell />
-                  <TableCell>
+                  <TableCell colSpan={3} align="center"/>
                     <CircularProgress />
-                  </TableCell>
                   <TableCell />
                 </TableRow>
               )}
+              { !isLoading && participants.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={3} align="center">
+                    <Typography
+                        color="textPrimary"
+                        variant="h4"
+                      >
+                        { t('NO_PARTICIPANTS') }
+                      </Typography>
+                  </TableCell>
+                </TableRow>
+              ) : null}
             </TableBody>
           </Table>
         </Box>

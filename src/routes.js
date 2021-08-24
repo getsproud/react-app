@@ -1,30 +1,27 @@
-import { Suspense, lazy } from 'react';
-import AuthGuard from './components/AuthGuard';
-import DashboardLayout from './components/dashboard/DashboardLayout';
-import GuestGuard from './components/GuestGuard';
-import LoadingScreen from './components/LoadingScreen';
+import { Suspense, lazy } from 'react'
+import AuthGuard from './components/AuthGuard'
+import DashboardLayout from './components/dashboard/DashboardLayout'
+import GuestGuard from './components/GuestGuard'
+import LoadingScreen from './components/LoadingScreen'
 
 const Loadable = (Component) => (props) => (
   <Suspense fallback={<LoadingScreen />}>
     <Component {...props} />
   </Suspense>
-);
+)
 
 // Authentication pages
 
-const Login = Loadable(lazy(() => import('./pages/authentication/Login')));
-const PasswordRecovery = Loadable(lazy(() => import('./pages/authentication/PasswordRecovery')));
-const PasswordReset = Loadable(lazy(() => import('./pages/authentication/PasswordReset')));
-const Register = Loadable(lazy(() => import('./pages/authentication/Register')));
-const VerifyCode = Loadable(lazy(() => import('./pages/authentication/VerifyCode')));
+const Login = Loadable(lazy(() => import('./pages/authentication/Login')))
+const PasswordRecovery = Loadable(lazy(() => import('./pages/authentication/PasswordRecovery')))
+const PasswordReset = Loadable(lazy(() => import('./pages/authentication/PasswordReset')))
+const Register = Loadable(lazy(() => import('./pages/authentication/Register')))
+const VerifyCode = Loadable(lazy(() => import('./pages/authentication/VerifyCode')))
 
 // Dashboard pages
 
-const Account = Loadable(lazy(() => import('./pages/dashboard/Account')));
-const Analytics = Loadable(lazy(() => import('./pages/dashboard/Analytics')));
-const Calendar = Loadable(lazy(() => import('./pages/dashboard/Calendar')));
-const Chat = Loadable(lazy(() => import('./pages/dashboard/Chat')));
-const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')));
+const Account = Loadable(lazy(() => import('./pages/dashboard/Account')))
+const Overview = Loadable(lazy(() => import('./pages/dashboard/Overview')))
 
 const TrainingList = Loadable(lazy(() => import('./pages/training/TrainingList')))
 const TrainingDetail = Loadable(lazy(() => import('./pages/training/TrainingDetail')))
@@ -32,9 +29,9 @@ const TrainingCreate = Loadable(lazy(() => import('./pages/training/TrainingCrea
 
 // Error pages
 
-const AuthorizationRequired = Loadable(lazy(() => import('./pages/AuthorizationRequired')));
-const NotFound = Loadable(lazy(() => import('./pages/NotFound')));
-const ServerError = Loadable(lazy(() => import('./pages/ServerError')));
+const AuthorizationRequired = Loadable(lazy(() => import('./pages/AuthorizationRequired')))
+const NotFound = Loadable(lazy(() => import('./pages/NotFound')))
+const ServerError = Loadable(lazy(() => import('./pages/ServerError')))
 
 const routes = [
   {
@@ -96,7 +93,7 @@ const routes = [
       },
       {
         path: 'budget',
-        element: <Analytics />
+        element: <Overview />
       },
       {
         path: 'training',
@@ -117,26 +114,26 @@ const routes = [
       },
       {
         path: 'brownbag-sessions',
-        element: <Calendar />,
+        element: <Overview />
       },
       {
         path: 'calendar',
-        element: <Calendar />,
+        element: <Overview />
       },
       {
         path: 'finance',
         children: [
           {
             path: 'spendings',
-            element: <Chat />,
+            element: <Overview />
           },
           {
             path: '/spendings/:spending',
-            element: <Chat />
+            element: <Overview />
           },
           {
             path: 'analytics',
-            element: <Analytics />
+            element: <Overview />
           }
         ]
       },
@@ -145,11 +142,11 @@ const routes = [
         children: [
           {
             path: 'users',
-            element: <Chat />
+            element: <Overview />
           },
           {
             path: 'analytics',
-            element: <Analytics />
+            element: <Overview />
           }
         ]
       },
@@ -158,11 +155,11 @@ const routes = [
         children: [
           {
             path: 'settings',
-            element: <Chat />,
+            element: <Overview />
           },
           {
             path: 'company',
-            element: <Chat />
+            element: <Overview />
           }
         ]
       }
@@ -180,6 +177,6 @@ const routes = [
     path: '*',
     element: <NotFound />
   }
-];
+]
 
-export default routes;
+export default routes

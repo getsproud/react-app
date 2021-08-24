@@ -1,11 +1,9 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 import { Box, Breadcrumbs, Button, Container, Grid, Typography } from '@material-ui/core'
 import { TrainingListTable } from '../../components/training'
-import useMounted from '../../hooks/useMounted'
-import useTraining from '../../hooks/useTraining'
 import useSettings from '../../hooks/useSettings'
 import ChevronRightIcon from '../../icons/ChevronRight'
 import PlusIcon from '../../icons/Plus'
@@ -13,27 +11,12 @@ import gtm from '../../lib/gtm'
 
 const TrainingList = () => {
   const { settings } = useSettings()
-  const [trainingDocs, setTrainings] = useState({ totalDocs: 0, docs: []})
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { fetchTrainings, trainings } = useTraining()
 
   useEffect(() => {
     gtm.push({ event: 'page_view' })
-    fetchTrainings()
   }, [])
-
-  const getTrainings = useCallback(async () => {
-    try {
-      setTrainings(trainings)
-    } catch (err) {
-      console.error(err)
-    }
-  }, [trainings])
-
-  useEffect(() => {
-    getTrainings()
-  }, [getTrainings, trainings])
 
   return (
     <>
@@ -88,7 +71,7 @@ const TrainingList = () => {
             </Grid>
           </Grid>
           <Box sx={{ mt: 3 }}>
-            <TrainingListTable trainings={trainingDocs} />
+            <TrainingListTable />
           </Box>
         </Container>
       </Box>

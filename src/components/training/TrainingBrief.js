@@ -76,7 +76,7 @@ const TrainingBrief = (props) => {
             { t('DESCRIPTION') }
           </Typography>
           <MarkdownWrapper>
-            <Markdown source={description} />
+            <Markdown escapeHtml={false} source={description} />
           </MarkdownWrapper>
         </Box>
       </CardContent>

@@ -1,14 +1,24 @@
-import { useDispatch as useReduxDispatch, useSelector as useReduxSelector } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './rootReducer';
+import { configureStore } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
+
+import { trainingApi } from '../services/training'
+import { authenticationApi } from '../services/authentication'
+import { feedbackApi } from '../services/feedback'
+import authReducer from '../slices/authentication'
+
 
 const store = configureStore({
-  reducer: rootReducer,
-  devTools: process.env.REACT_APP_ENABLE_REDUX_DEV_TOOLS === 'true'
-});
+  reducer: {
+    [trainingApi.reducerPath]: trainingApi.reducer,
+    [authenticationApi.reducerPath]: authenticationApi.reducer,
+    [feedbackApi.reducerPath]: feedbackApi.reducer,
+    auth: authReducer
+  },
+  devTools: true,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(trainingApi.middleware, authenticationApi.middleware, feedbackApi.middleware)
+})
 
-export const useSelector = useReduxSelector;
 
-export const useDispatch = () => useReduxDispatch();
+setupListeners(store.dispatch)
 
-export default store;
+export default store
